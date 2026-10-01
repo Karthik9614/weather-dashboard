@@ -1,5 +1,6 @@
-import CurrentWeather from "@/components/CurrentWeather";
-import Header from "@/components/Header";
+import CurrentWeather from "@/components/CurrentWeather/CurrentWeather";
+import Header from "@/components/Header/Header";
+import styles from './page.module.css';
 
 export default function Home() {
   const weather = {
@@ -13,15 +14,15 @@ export default function Home() {
   };
 
   return (
-    <main className="dashboard">
+    <main className={styles.dashboard}>
       <Header />
 
-      <section className="hero">
-        <p className="eyebrow">WEATHER DASHBOARD</p>
+      <section className={styles.hero}>
+        <p className={styles.eyebrow}>WEATHER DASHBOARD</p>
 
         <h1>Know your weather.</h1>
 
-        <p className="subtitle">
+        <p className={styles.subtitle}>
           Plan your day with accurate weather information at a glance.
         </p>
       </section>
