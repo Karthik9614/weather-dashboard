@@ -8,6 +8,7 @@ import HourlyForecast from "@/components/HourlyForecast/HourlyForecast";
 import DailyForecast from "@/components/DailyForecast/DailyForecast";
 
 import { getWeatherCondition } from "@/lib/weather";
+import { formatHour, formatDay } from "@/lib/date";
 
 import type {
   WeatherData,
@@ -68,8 +69,8 @@ export default function WeatherDashboard() {
       const nextHours = hourly.time
         .slice(startIndex, startIndex + 5)
         .map((time: string, index: number) => ({
-          time,
-          temperature: hourly.temperature_2m[startIndex + index],
+          time: formatHour(time),
+          temperature: Math.round(hourly.temperature_2m[startIndex + index]),
           condition: getWeatherCondition(
             hourly.weather_code[startIndex + index],
           ),
@@ -78,9 +79,9 @@ export default function WeatherDashboard() {
       setHourlyForecast(nextHours);
       //Daily forecast
       const nextDays = daily.time.map((date: string, index: number) => ({
-        day: date,
-        temperatureHigh: daily.temperature_2m_max[index],
-        temperatureLow: daily.temperature_2m_min[index],
+        day: formatDay(date, index),
+        temperatureHigh: Math.round(daily.temperature_2m_max[index]),
+        temperatureLow: Math.round(daily.temperature_2m_min[index]),
         condition: getWeatherCondition(daily.weather_code[index]),
       }));
 
