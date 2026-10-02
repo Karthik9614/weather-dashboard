@@ -7,6 +7,8 @@ export type WeatherData = {
   humidity: number;
   windSpeed: number;
   icon: string;
+  weatherCode: number;
+  isDay: boolean;
 };
 
 export type HourlyForecastItem = {

@@ -15,15 +15,14 @@ export default function CurrentWeather({ weather }: CurrentWeatherProps) {
           <h2>
             {weather.city}, {weather.country}
           </h2>
-
-          {/* <p className={styles.condition}>{weather.condition}</p> */}
+          
           <div>
             <span>{weather.icon}</span>
             <span>{weather.condition}</span>
           </div>
         </div>
 
-        <div className={styles.temperature}>{weather.temperature}°</div>
+        <div className={styles.temperature}>{Math.round(weather.temperature)}°</div>
       </div>
 
       <div className={styles.stats}>

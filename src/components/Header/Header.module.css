@@ -6,25 +6,38 @@
 }
 
 .brand h2 {
+  margin: 0;
+
   font-size: 22px;
   letter-spacing: -0.03em;
+
+  color: var(--page-text);
 }
 
 .brand p {
-  margin-top: 4px;
+  margin: 4px 0 0;
+
   font-size: 13px;
-  color: #6b7280;
+
+  color: var(--page-muted);
 }
 
-.themeButton {
+.theme-button {
   padding: 10px 16px;
-  border: 1px solid #d1d5db;
+
+  border: 1px solid var(--page-border);
   border-radius: 999px;
+
   background: transparent;
-  color: inherit;
+  color: var(--page-text);
+
   cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
-.themeButton:hover {
-  background: #e5e7eb;
+.theme-button:hover {
+  background: rgba(255, 255, 255, 0.12);
 }
