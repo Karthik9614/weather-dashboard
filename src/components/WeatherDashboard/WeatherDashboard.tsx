@@ -74,7 +74,7 @@ function processWeatherData(data: WeatherApiResponse) {
   const startIndex = hourly.time.findIndex((time) => time === currentHour);
 
   const nextHours: HourlyForecastItem[] = hourly.time
-    .slice(startIndex, startIndex + 5)
+    .slice(startIndex, startIndex + 24)
     .map((time, index) => ({
       time: formatHour(time),
       temperature: Math.round(hourly.temperature_2m[startIndex + index]),

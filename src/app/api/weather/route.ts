@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
     );
 
     weatherUrl.searchParams.set("timezone", "auto");
-    weatherUrl.searchParams.set("forecast_days", "5");
+    weatherUrl.searchParams.set("forecast_days", "7");
 
     const weatherResponse = await fetch(weatherUrl);
 

@@ -18,12 +18,17 @@
 }
 
 .list {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 28px;
+  overflow-x: auto;
+  padding: 20px 4px 12px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
 }
 
 .item {
+  flex: 0 0 90px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,6 +48,8 @@
 
 .condition {
   font-size: 14px;
+  text-align: center;
+  min-height: 40px;
 }
 
 .temperature {

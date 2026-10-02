@@ -12,6 +12,10 @@ export function formatDay(date: string, index: number): string {
     return "Today";
   }
 
+  if (index === 1) {
+    return "Tomorrow";
+  }
+
   const day = new Date(`${date}T00:00:00`);
 
   return day.toLocaleDateString("en-IN", {
