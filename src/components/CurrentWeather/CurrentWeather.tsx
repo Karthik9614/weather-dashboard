@@ -5,9 +5,7 @@ type CurrentWeatherProps = {
   weather: WeatherData;
 };
 
-export default function CurrentWeather({
-  weather,
-}: CurrentWeatherProps) {
+export default function CurrentWeather({ weather }: CurrentWeatherProps) {
   return (
     <section className={styles.card}>
       <div className={styles.main}>
@@ -18,12 +16,14 @@ export default function CurrentWeather({
             {weather.city}, {weather.country}
           </h2>
 
-          <p className={styles.condition}>{weather.condition}</p>
+          {/* <p className={styles.condition}>{weather.condition}</p> */}
+          <div>
+            <span>{weather.icon}</span>
+            <span>{weather.condition}</span>
+          </div>
         </div>
 
-        <div className={styles.temperature}>
-          {weather.temperature}°
-        </div>
+        <div className={styles.temperature}>{weather.temperature}°</div>
       </div>
 
       <div className={styles.stats}>

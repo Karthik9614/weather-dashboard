@@ -7,7 +7,7 @@ import CurrentWeather from "@/components/CurrentWeather/CurrentWeather";
 import HourlyForecast from "@/components/HourlyForecast/HourlyForecast";
 import DailyForecast from "@/components/DailyForecast/DailyForecast";
 
-import { getWeatherCondition } from "@/lib/weather";
+import { getWeatherCondition, getWeatherIcon } from "@/lib/weather";
 import { formatHour, formatDay } from "@/lib/date";
 
 import type {
@@ -56,6 +56,7 @@ export default function WeatherDashboard() {
         feelsLike: current.apparent_temperature,
         humidity: current.relative_humidity_2m,
         windSpeed: current.wind_speed_10m,
+        icon: getWeatherIcon(current.weather_code),
       };
 
       setWeather(currentWeather);
@@ -74,6 +75,7 @@ export default function WeatherDashboard() {
           condition: getWeatherCondition(
             hourly.weather_code[startIndex + index],
           ),
+          icon: getWeatherIcon(hourly.weather_code[startIndex + index]),
         }));
 
       setHourlyForecast(nextHours);
@@ -83,6 +85,7 @@ export default function WeatherDashboard() {
         temperatureHigh: Math.round(daily.temperature_2m_max[index]),
         temperatureLow: Math.round(daily.temperature_2m_min[index]),
         condition: getWeatherCondition(daily.weather_code[index]),
+        icon: getWeatherIcon(daily.weather_code[index]),
       }));
 
       setDailyForecast(nextDays);

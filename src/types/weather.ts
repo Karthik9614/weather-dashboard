@@ -6,12 +6,14 @@ export type WeatherData = {
   feelsLike: number;
   humidity: number;
   windSpeed: number;
+  icon: string;
 };
 
 export type HourlyForecastItem = {
   time: string;
   temperature: number;
   condition: string;
+  icon: string;
 };
 
 export type DailyForecastItem = {
@@ -19,4 +21,5 @@ export type DailyForecastItem = {
   temperatureHigh: number;
   temperatureLow: number;
   condition: string;
+  icon: string;
 };

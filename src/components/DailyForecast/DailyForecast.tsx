@@ -5,9 +5,7 @@ type DailyForecastProps = {
   forecast: DailyForecastItem[];
 };
 
-export default function DailyForecast({
-  forecast,
-}: DailyForecastProps) {
+export default function DailyForecast({ forecast }: DailyForecastProps) {
   return (
     <section className={styles.dailyForecast}>
       <div className={styles.header}>
@@ -19,17 +17,13 @@ export default function DailyForecast({
           <div className={styles.item} key={item.day}>
             <span className={styles.day}>{item.day}</span>
 
-            <span className={styles.condition}>
-              {item.condition}
-            </span>
+            <span>{item.icon}</span>
 
-            <strong className={styles.high}>
-              {item.temperatureHigh}°
-            </strong>
+            <span className={styles.condition}>{item.condition}</span>
 
-            <span className={styles.low}>
-              {item.temperatureLow}°
-            </span>
+            <span className={styles.high}>{item.temperatureHigh}°</span>
+
+            <span className={styles.low}>{item.temperatureLow}°</span>
           </div>
         ))}
       </div>

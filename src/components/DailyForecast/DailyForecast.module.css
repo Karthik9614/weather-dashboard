@@ -24,11 +24,11 @@
 
 .item {
   display: grid;
-  grid-template-columns: 80px 1fr 70px 70px;
+  grid-template-columns: 80px 40px 1fr 60px 60px;
   align-items: center;
   gap: 16px;
-  padding: 18px 12px;
-  border-bottom: 1px solid #e2e8f0;
+  padding: 18px 8px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .item:last-child {

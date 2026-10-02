@@ -16,8 +16,9 @@ export default function HourlyForecast({ forecast }: HourlyForecastProps) {
         {forecast.map((item) => (
           <div className={styles.item} key={item.time}>
             <span className={styles.time}>{item.time}</span>
+            <span className={styles.icon}>{item.icon}</span>
             <span className={styles.condition}>{item.condition}</span>
-            <strong className={styles.temperature}>{item.temperature}°</strong>
+            <span className={styles.temperature}>{item.temperature}°</span>
           </div>
         ))}
       </div>
