@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Header from "@/components/Header/Header";
 import WeatherDashboard from "@/components/WeatherDashboard/WeatherDashboard";
+import WeatherAtmosphere from "@/components/WeatherAtmosphere/WeatherAtmosphere";
 import styles from "./WeatherPage.module.css";
 
 export default function WeatherPage() {
@@ -9,19 +10,23 @@ export default function WeatherPage() {
 
   return (
     <main className={`${styles.dashboard} ${styles[weatherTheme]}`}>
-      <Header />
+      <WeatherAtmosphere theme={weatherTheme} />
 
-      <section className={styles.hero}>
-        <p className={styles.eyebrow}>WEATHER DASHBOARD</p>
+      <div className={styles.content}>
+        <Header />
 
-        <h1>Know your weather.</h1>
+        <section className={styles.hero}>
+          <p className={styles.eyebrow}>WEATHER DASHBOARD</p>
 
-        <p className={styles.subtitle}>
-          Plan your day with accurate weather information at a glance.
-        </p>
-      </section>
+          <h1>Know your weather.</h1>
 
-      <WeatherDashboard onThemeChange={setWeatherTheme} />
+          <p className={styles.subtitle}>
+            Plan your day with accurate weather information at a glance.
+          </p>
+        </section>
+
+        <WeatherDashboard onThemeChange={setWeatherTheme} />
+      </div>
     </main>
   );
 }
