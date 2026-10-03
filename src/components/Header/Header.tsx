@@ -1,6 +1,16 @@
 import styles from "./Header.module.css";
 
-export default function Header() {
+type HeaderProps = {
+  temperatureUnit: "celsius" | "fahrenheit";
+  onTemperatureUnitChange: (
+    unit: "celsius" | "fahrenheit",
+  ) => void;
+};
+
+export default function Header({
+  temperatureUnit,
+  onTemperatureUnitChange,
+}: HeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
@@ -8,8 +18,18 @@ export default function Header() {
         <p>Weather at a glance</p>
       </div>
 
-      <button className={styles.themeButton} type="button">
-        Theme
+      <button
+        className={styles.themeButton}
+        type="button"
+        onClick={() =>
+          onTemperatureUnitChange(
+            temperatureUnit === "celsius"
+              ? "fahrenheit"
+              : "celsius",
+          )
+        }
+      >
+        {temperatureUnit === "celsius" ? "°C" : "°F"}
       </button>
     </header>
   );

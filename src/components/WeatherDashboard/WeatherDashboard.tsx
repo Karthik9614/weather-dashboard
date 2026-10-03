@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import CitySearch from "@/components/CitySearch/CitySearch";
 import CurrentWeather from "@/components/CurrentWeather/CurrentWeather";
@@ -13,6 +13,7 @@ import { getWeatherTheme } from "@/lib/weatherTheme";
 
 type WeatherDashboardProps = {
   onThemeChange: (theme: string) => void;
+  temperatureUnit: "celsius" | "fahrenheit";
 };
 
 import type {
@@ -97,42 +98,106 @@ function processWeatherData(data: WeatherApiResponse) {
   };
 }
 
+type WeatherLocation =
+  | {
+      type: "city";
+      city: string;
+    }
+  | {
+      type: "coordinates";
+      latitude: number;
+      longitude: number;
+    };
+
 export default function WeatherDashboard({
   onThemeChange,
+  temperatureUnit,
 }: WeatherDashboardProps) {
   const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [weatherLocation, setWeatherLocation] =
+    useState<WeatherLocation | null>(null);
   const [hourlyForecast, setHourlyForecast] = useState<HourlyForecastItem[]>(
     [],
   );
   const [dailyForecast, setDailyForecast] = useState<DailyForecastItem[]>([]);
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
- const weatherTheme = weather
-  ? getWeatherTheme(weather.weatherCode, weather.isDay)
-  : "clear-day";
+  const previousTemperatureUnit = useRef(temperatureUnit);
+
+  const weatherTheme = weather
+    ? getWeatherTheme(weather.weatherCode, weather.isDay)
+    : "clear-day";
 
   useEffect(() => {
     handleLocationRequest();
   }, []);
 
-  const updateWeather = (result: {
-  weather: WeatherData;
-  hourly: HourlyForecastItem[];
-  daily: DailyForecastItem[];
-}) => {
-  setWeather(result.weather);
-  setHourlyForecast(result.hourly);
-  setDailyForecast(result.daily);
+  useEffect(() => {
+  if (previousTemperatureUnit.current === temperatureUnit) {
+    return;
+  }
 
-  onThemeChange(
-    getWeatherTheme(
-      result.weather.weatherCode,
-      result.weather.isDay,
-    ),
-  );
-};
+  previousTemperatureUnit.current = temperatureUnit;
+
+  if (!weatherLocation) {
+    return;
+  }
+
+  const refreshWeather = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      let url = "";
+
+      if (weatherLocation.type === "city") {
+        url = `/api/weather?city=${encodeURIComponent(
+          weatherLocation.city,
+        )}&unit=${temperatureUnit}`;
+      } else {
+        url = `/api/weather?lat=${weatherLocation.latitude}&lon=${weatherLocation.longitude}&unit=${temperatureUnit}`;
+      }
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to fetch weather");
+      }
+
+      const result = processWeatherData(data);
+
+      updateWeather(result);
+    } catch (error) {
+      console.error(error);
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Unable to refresh weather",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  refreshWeather();
+}, [temperatureUnit, weatherLocation]);
+
+  const updateWeather = (result: {
+    weather: WeatherData;
+    hourly: HourlyForecastItem[];
+    daily: DailyForecastItem[];
+  }) => {
+    setWeather(result.weather);
+    setHourlyForecast(result.hourly);
+    setDailyForecast(result.daily);
+
+    onThemeChange(
+      getWeatherTheme(result.weather.weatherCode, result.weather.isDay),
+    );
+  };
 
   const handleSearch = async (city: string) => {
     setLoading(true);
@@ -140,7 +205,7 @@ export default function WeatherDashboard({
 
     try {
       const response = await fetch(
-        `/api/weather?city=${encodeURIComponent(city)}`,
+        `/api/weather?city=${encodeURIComponent(city)}&unit=${temperatureUnit}`,
       );
 
       const data = await response.json();
@@ -153,10 +218,14 @@ export default function WeatherDashboard({
 
       const result = processWeatherData(data);
       updateWeather(result);
+      setWeatherLocation({
+        type: "city",
+        city,
+      });
 
-      setWeather(result.weather);
-      setHourlyForecast(result.hourly);
-      setDailyForecast(result.daily);
+      // setWeather(result.weather);
+      // setHourlyForecast(result.hourly);
+      // setDailyForecast(result.daily);
     } catch (error) {
       console.error(error);
 
@@ -206,7 +275,7 @@ export default function WeatherDashboard({
 
           // Get weather using the device coordinates
           const weatherResponse = await fetch(
-            `/api/weather?lat=${latitude}&lon=${longitude}`,
+            `/api/weather?lat=${latitude}&lon=${longitude}&unit=${temperatureUnit}`,
           );
 
           const weatherData: WeatherApiResponse = await weatherResponse.json();
@@ -230,10 +299,11 @@ export default function WeatherDashboard({
 
           const result = processWeatherData(dataWithLocation);
           updateWeather(result);
-
-          setWeather(result.weather);
-          setHourlyForecast(result.hourly);
-          setDailyForecast(result.daily);
+          setWeatherLocation({
+            type: "coordinates",
+            latitude,
+            longitude,
+          });
         } catch (error) {
           console.error(error);
 

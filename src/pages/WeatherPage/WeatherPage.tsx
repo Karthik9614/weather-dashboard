@@ -7,13 +7,19 @@ import styles from "./WeatherPage.module.css";
 
 export default function WeatherPage() {
   const [weatherTheme, setWeatherTheme] = useState("clear-day");
+  const [temperatureUnit, setTemperatureUnit] = useState<
+    "celsius" | "fahrenheit"
+  >("celsius");
 
   return (
     <main className={`${styles.dashboard} ${styles[weatherTheme]}`}>
       <WeatherAtmosphere theme={weatherTheme} />
 
       <div className={styles.content}>
-        <Header />
+        <Header
+          temperatureUnit={temperatureUnit}
+          onTemperatureUnitChange={setTemperatureUnit}
+        />
 
         <section className={styles.hero}>
           <p className={styles.eyebrow}>WEATHER DASHBOARD</p>
@@ -25,7 +31,10 @@ export default function WeatherPage() {
           </p>
         </section>
 
-        <WeatherDashboard onThemeChange={setWeatherTheme} />
+        <WeatherDashboard
+          onThemeChange={setWeatherTheme}
+          temperatureUnit={temperatureUnit}
+        />
       </div>
     </main>
   );

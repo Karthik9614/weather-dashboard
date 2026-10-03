@@ -7,6 +7,9 @@ export async function GET(request: NextRequest) {
   const lat = searchParams.get("lat");
   const lon = searchParams.get("lon");
 
+  const temperatureUnit =
+    searchParams.get("unit") === "fahrenheit" ? "fahrenheit" : "celsius";
+
   if (!city && (!lat || !lon)) {
     return NextResponse.json(
       { error: "City or coordinates are required" },
@@ -41,10 +44,7 @@ export async function GET(request: NextRequest) {
       const geocodingData = await geocodingResponse.json();
 
       if (!geocodingData.results?.length) {
-        return NextResponse.json(
-          { error: "City not found" },
-          { status: 404 },
-        );
+        return NextResponse.json({ error: "City not found" }, { status: 404 });
       }
 
       location = geocodingData.results[0];
@@ -58,10 +58,7 @@ export async function GET(request: NextRequest) {
       latitude = Number(lat);
       longitude = Number(lon);
 
-      if (
-        Number.isNaN(latitude) ||
-        Number.isNaN(longitude)
-      ) {
+      if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
         return NextResponse.json(
           { error: "Invalid coordinates" },
           { status: 400 },
@@ -79,9 +76,7 @@ export async function GET(request: NextRequest) {
     // --------------------------------
     // 3. Fetch weather
     // --------------------------------
-    const weatherUrl = new URL(
-      "https://api.open-meteo.com/v1/forecast",
-    );
+    const weatherUrl = new URL("https://api.open-meteo.com/v1/forecast");
 
     weatherUrl.searchParams.set("latitude", String(latitude));
     weatherUrl.searchParams.set("longitude", String(longitude));
@@ -91,10 +86,7 @@ export async function GET(request: NextRequest) {
       "temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day",
     );
 
-    weatherUrl.searchParams.set(
-      "hourly",
-      "temperature_2m,weather_code",
-    );
+    weatherUrl.searchParams.set("hourly", "temperature_2m,weather_code");
 
     weatherUrl.searchParams.set(
       "daily",
@@ -102,6 +94,7 @@ export async function GET(request: NextRequest) {
     );
 
     weatherUrl.searchParams.set("timezone", "auto");
+    weatherUrl.searchParams.set("temperature_unit", temperatureUnit);
     weatherUrl.searchParams.set("forecast_days", "7");
 
     const weatherResponse = await fetch(weatherUrl);
