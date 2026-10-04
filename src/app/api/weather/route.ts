@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
 
     weatherUrl.searchParams.set(
       "current",
-      "temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day",
+      "temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_direction_10m,precipitation,pressure_msl,visibility,weather_code,is_day",
     );
 
     weatherUrl.searchParams.set("hourly", "temperature_2m,weather_code");

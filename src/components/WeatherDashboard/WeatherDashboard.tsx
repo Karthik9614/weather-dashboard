@@ -6,6 +6,7 @@ import CitySearch from "@/components/CitySearch/CitySearch";
 import CurrentWeather from "@/components/CurrentWeather/CurrentWeather";
 import HourlyForecast from "@/components/HourlyForecast/HourlyForecast";
 import DailyForecast from "@/components/DailyForecast/DailyForecast";
+import WeatherDetails from "@/components/WeatherDetails/WeatherDetails";
 
 import { getWeatherCondition, getWeatherIcon } from "@/lib/weather";
 import { formatHour, formatDay } from "@/lib/date";
@@ -37,6 +38,10 @@ type WeatherApiResponse = {
       wind_speed_10m: number;
       weather_code: number;
       is_day: number;
+      wind_direction_10m: number;
+      precipitation: number;
+      pressure_msl: number;
+      visibility: number;
     };
     hourly: {
       time: string[];
@@ -68,6 +73,10 @@ function processWeatherData(data: WeatherApiResponse) {
     windSpeed: current.wind_speed_10m,
     weatherCode: current.weather_code,
     isDay: current.is_day === 1,
+    windDirection: current.wind_direction_10m,
+    precipitation: current.precipitation,
+    pressure: current.pressure_msl,
+    visibility: current.visibility,
   };
 
   const currentHour = current.time.slice(0, 13) + ":00";
@@ -134,56 +143,54 @@ export default function WeatherDashboard({
   }, []);
 
   useEffect(() => {
-  if (previousTemperatureUnit.current === temperatureUnit) {
-    return;
-  }
-
-  previousTemperatureUnit.current = temperatureUnit;
-
-  if (!weatherLocation) {
-    return;
-  }
-
-  const refreshWeather = async () => {
-    setLoading(true);
-    setError("");
-
-    try {
-      let url = "";
-
-      if (weatherLocation.type === "city") {
-        url = `/api/weather?city=${encodeURIComponent(
-          weatherLocation.city,
-        )}&unit=${temperatureUnit}`;
-      } else {
-        url = `/api/weather?lat=${weatherLocation.latitude}&lon=${weatherLocation.longitude}&unit=${temperatureUnit}`;
-      }
-
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Unable to fetch weather");
-      }
-
-      const result = processWeatherData(data);
-
-      updateWeather(result);
-    } catch (error) {
-      console.error(error);
-
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Unable to refresh weather",
-      );
-    } finally {
-      setLoading(false);
+    if (previousTemperatureUnit.current === temperatureUnit) {
+      return;
     }
-  };
 
-  refreshWeather();
-}, [temperatureUnit, weatherLocation]);
+    previousTemperatureUnit.current = temperatureUnit;
+
+    if (!weatherLocation) {
+      return;
+    }
+
+    const refreshWeather = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        let url = "";
+
+        if (weatherLocation.type === "city") {
+          url = `/api/weather?city=${encodeURIComponent(
+            weatherLocation.city,
+          )}&unit=${temperatureUnit}`;
+        } else {
+          url = `/api/weather?lat=${weatherLocation.latitude}&lon=${weatherLocation.longitude}&unit=${temperatureUnit}`;
+        }
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Unable to fetch weather");
+        }
+
+        const result = processWeatherData(data);
+
+        updateWeather(result);
+      } catch (error) {
+        console.error(error);
+
+        setError(
+          error instanceof Error ? error.message : "Unable to refresh weather",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    refreshWeather();
+  }, [temperatureUnit, weatherLocation]);
 
   const updateWeather = (result: {
     weather: WeatherData;
@@ -344,6 +351,8 @@ export default function WeatherDashboard({
       {error && <p>{error}</p>}
 
       {weather && <CurrentWeather weather={weather} />}
+
+      {weather && <WeatherDetails weather={weather} />}
 
       {hourlyForecast.length > 0 && (
         <HourlyForecast forecast={hourlyForecast} />

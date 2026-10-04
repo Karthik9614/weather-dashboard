@@ -9,6 +9,10 @@ export type WeatherData = {
   icon: string;
   weatherCode: number;
   isDay: boolean;
+  windDirection: number;
+  precipitation: number;
+  pressure: number;
+  visibility: number;
 };
 
 export type HourlyForecastItem = {
