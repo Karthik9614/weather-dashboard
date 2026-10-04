@@ -29,3 +29,9 @@ export type DailyForecastItem = {
   condition: string;
   icon: string;
 };
+
+export type SunInfo = {
+  sunrise: string;
+  sunset: string;
+  uvIndex: number;
+};

@@ -90,9 +90,8 @@ export async function GET(request: NextRequest) {
 
     weatherUrl.searchParams.set(
       "daily",
-      "weather_code,temperature_2m_max,temperature_2m_min",
+      "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max",
     );
-
     weatherUrl.searchParams.set("timezone", "auto");
     weatherUrl.searchParams.set("temperature_unit", temperatureUnit);
     weatherUrl.searchParams.set("forecast_days", "7");

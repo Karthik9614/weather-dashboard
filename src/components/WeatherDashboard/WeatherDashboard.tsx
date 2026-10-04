@@ -7,6 +7,7 @@ import CurrentWeather from "@/components/CurrentWeather/CurrentWeather";
 import HourlyForecast from "@/components/HourlyForecast/HourlyForecast";
 import DailyForecast from "@/components/DailyForecast/DailyForecast";
 import WeatherDetails from "@/components/WeatherDetails/WeatherDetails";
+import SunInfo from "@/components/SunInfo/SunInfo";
 
 import { getWeatherCondition, getWeatherIcon } from "@/lib/weather";
 import { formatHour, formatDay } from "@/lib/date";
@@ -21,6 +22,7 @@ import type {
   WeatherData,
   HourlyForecastItem,
   DailyForecastItem,
+  SunInfo as SunInfoData,
 } from "@/types/weather";
 
 type WeatherApiResponse = {
@@ -53,6 +55,9 @@ type WeatherApiResponse = {
       temperature_2m_max: number[];
       temperature_2m_min: number[];
       weather_code: number[];
+      sunrise: string[];
+      sunset: string[];
+      uv_index_max: number[];
     };
   };
 };
@@ -100,10 +105,17 @@ function processWeatherData(data: WeatherApiResponse) {
     icon: getWeatherIcon(daily.weather_code[index]),
   }));
 
+  const sunInfo: SunInfoData = {
+    sunrise: daily.sunrise[0],
+    sunset: daily.sunset[0],
+    uvIndex: daily.uv_index_max[0],
+  };
+
   return {
     weather,
     hourly: nextHours,
     daily: nextDays,
+    sunInfo,
   };
 }
 
@@ -129,6 +141,7 @@ export default function WeatherDashboard({
     [],
   );
   const [dailyForecast, setDailyForecast] = useState<DailyForecastItem[]>([]);
+  const [sunInfo, setSunInfo] = useState<SunInfoData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -196,10 +209,12 @@ export default function WeatherDashboard({
     weather: WeatherData;
     hourly: HourlyForecastItem[];
     daily: DailyForecastItem[];
+    sunInfo: SunInfoData;
   }) => {
     setWeather(result.weather);
     setHourlyForecast(result.hourly);
     setDailyForecast(result.daily);
+    setSunInfo(result.sunInfo);
 
     onThemeChange(
       getWeatherTheme(result.weather.weatherCode, result.weather.isDay),
@@ -353,6 +368,8 @@ export default function WeatherDashboard({
       {weather && <CurrentWeather weather={weather} />}
 
       {weather && <WeatherDetails weather={weather} />}
+
+      {sunInfo && <SunInfo sunInfo={sunInfo} />}
 
       {hourlyForecast.length > 0 && (
         <HourlyForecast forecast={hourlyForecast} />
